@@ -12,7 +12,7 @@ func InitRouter() {
 	e.Use(middleware.MiddlewareLogging)
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]interface{}{
-			"hello": "dunia ",
+			"hello": "dunia tipu2",
 		})
 	})
 

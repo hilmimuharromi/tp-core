@@ -41,6 +41,6 @@ jobs:
           port: ${{ secrets.SERVER_PORT  }}
           script: |
             whoami
-            docker stop tp-core || true && docker rm tp-core || true
+            docker stop ${{ vars.CONTAINER_NAME }} || true && docker rm ${{ vars.CONTAINER_NAME }} || true
             docker pull ${{ vars.IMAGE_NAME }}
             docker run -d -p 8080:8080 --name ${{ vars.CONTAINER_NAME }} ${{ vars.IMAGE_NAME }}

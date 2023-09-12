@@ -14,7 +14,7 @@ func DatabaseInit() {
 	host := "localhost"
 	user := "root"
 	password := "password"
-	dbName := "go_rest_apis"
+	dbName := "go_rest_apis d"
 	port := 5432
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbName, port)

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"tp-core/middleware"
@@ -22,6 +23,8 @@ func InitRouter() {
 	})
 
 	api.GET("/callback/ds", func(c echo.Context) error {
+		query := c.QueryParams()
+		fmt.Println("query", query)
 		return c.String(200, "success")
 	})
 

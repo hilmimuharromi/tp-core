@@ -28,5 +28,11 @@ func InitRouter() {
 		return c.String(200, "success")
 	})
 
+	api.GET("/callback/wpy", func(c echo.Context) error {
+		query := c.QueryParams()
+		fmt.Println("query", query)
+		return c.String(200, "success")
+	})
+
 	e.Logger.Fatal(e.Start(":8080"))
 }

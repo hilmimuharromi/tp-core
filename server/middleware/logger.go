@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -30,14 +29,17 @@ func MiddlewareLogging(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func errorHandler(err error, c echo.Context) {
+func ErrorHandler(err error, c echo.Context) {
 	report, ok := err.(*echo.HTTPError)
-	if ok {
-		report.Message = fmt.Sprintf("http error %d - %v", report.Code, report.Message)
-	} else {
+	if !ok {
 		report = echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	makeLogEntry(c).Error(report.Message)
-	c.HTML(report.Code, report.Message.(string))
+	res := map[string]interface{}{
+		"code":    report.Code,
+		"status":  false,
+		"message": report.Message.(string),
+	}
+	c.JSON(report.Code, res)
 }

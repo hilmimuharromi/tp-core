@@ -1,23 +1,17 @@
 package main
 
 import (
-	"tp-core/router"
+	"gorm.io/gorm"
+	config2 "tp-core/server/config"
+	"tp-core/server/router"
+)
+
+var (
+	db *gorm.DB = config2.DatabaseInit()
 )
 
 func main() {
-	// Create HTTP server
-
-	//// Connect To Database
-	//config.DatabaseInit()
-	//gorm := config.DB()
-	//
-	//dbGorm, err := gorm.DB()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//dbGorm.Ping()
-
+	config2.DatabaseInit()
+	config2.MigrateDatabase(db)
 	router.InitRouter()
-
 }

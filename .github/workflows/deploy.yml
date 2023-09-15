@@ -1,0 +1,20 @@
+name: deploy
+on:
+  push:
+    branches: ["staging"]
+
+jobs:
+  deployment:
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.SERVER_USERNAME}}
+          password: ${{ secrets.SERVER_PASSWORD}}
+          port: ${{ secrets.SERVER_PORT  }}
+          script: |
+            whoami
+            cd tp-core && git pull

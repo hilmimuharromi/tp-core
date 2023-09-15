@@ -45,7 +45,7 @@ type ContentDs struct {
 func FetchproductDs() []models.ProductSupplier {
 	url := "http://36.88.177.95:8080/api/produk/pricing/0?page=0&size=10000&sort=namaoperator,ASC&sort=hargajual,asc"
 	header := map[string]string{
-		"Auth": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJPSzAwNDAiLCJpc3MiOiJJUlNYIiwiaWF0IjoxNjk0Njg3MzIxLCJleHAiOjE2OTQ3MzA1MjB9.oGG6FlJjVeZaDPfusP5JUMzhRAX_DDT8J-3D3Dnzms8",
+		"Auth": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJPSzAwNDAiLCJpc3MiOiJJUlNYIiwiaWF0IjoxNjk0ODAyMjExLCJleHAiOjE2OTQ4NDU0MTF9.NcmVv51Ozrhvx_gXnBuP29D2sx8y6p0KGFA0eovKy3I",
 	}
 	response := helpers.ClientRequest(http.MethodGet, url, "", header)
 

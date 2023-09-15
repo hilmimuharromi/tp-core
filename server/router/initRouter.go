@@ -25,11 +25,6 @@ func InitRouter() {
 	e.Validator = custValidator
 
 	web.RegisterHandlers(e)
-	//e.GET("/", func(c echo.Context) error {
-	//	return c.JSON(http.StatusOK, map[string]interface{}{
-	//		"hello": "dunia tipu2",
-	//	})
-	//})
 
 	api := e.Group("/api/v1")
 

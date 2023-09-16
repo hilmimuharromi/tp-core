@@ -7,6 +7,7 @@ jobs:
   deployment:
     environment: staging
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -15,6 +16,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME}}
           password: ${{ secrets.SERVER_PASSWORD}}
           port: ${{ secrets.SERVER_PORT  }}
+          command_timeout: 60m
           script: |
             whoami
             cd tp-core && git pull

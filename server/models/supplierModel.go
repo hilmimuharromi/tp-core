@@ -8,4 +8,5 @@ type Supplier struct {
 	SpCode     string `json:"spCode"`
 	OurBalance int    `json:"ourBalance"`
 	Token      string `json:"token"`
+	PriceUrl   string `json:"priceUrl"`
 }

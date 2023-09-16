@@ -9,10 +9,16 @@ import (
 )
 
 func SyncProductSupplier(c echo.Context) error {
-	dataProducts := integrations.FetchproductDs()
+	spCode := c.Param("id")
+	if spCode == "" {
+		return echo.NewHTTPError(400, "invalid id supplier")
+	}
+	supplier, _ := repositories.GetSupplier(spCode)
+	dataProducts := integrations.FetchproductDs(supplier)
 	resSave, err := repositories.InsertManyProductSuppliers(dataProducts)
 	if err != nil {
 		log.Println("error", err)
+		return err
 	}
 	res := map[string]interface{}{
 		"data": resSave,

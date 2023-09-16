@@ -11,5 +11,6 @@ type ProductSupplier struct {
 	Price      int    `json:"price"`
 	Status     string `json:"status"`
 	SupplierId int    `json:"supplierId"`
+	Category   string `json:"category"`
 	Supplier   Supplier
 }

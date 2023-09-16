@@ -19,7 +19,7 @@ type ResProductDS struct {
 type DataproductDs struct {
 	Number           int `json:"number"`
 	NumberOfElements int `json:"numberOfElements"`
-	totalOfElements  int `json:"totalOfElements"`
+	TotalOfElements  int `json:"totalOfElements"`
 	Page             int `json:"page"`
 	TotalPage        int `json:"totalPage"`
 	Content          []ContentDs
@@ -42,15 +42,18 @@ type ContentDs struct {
 	Isstokkosong int    `json:"isstokkosong"`
 }
 
-func FetchproductDs() []models.ProductSupplier {
-	url := "http://36.88.177.95:8080/api/produk/pricing/0?page=0&size=10000&sort=namaoperator,ASC&sort=hargajual,asc"
+func FetchproductDs(suplier models.Supplier) []models.ProductSupplier {
+	url := suplier.PriceUrl
 	header := map[string]string{
-		"Auth": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJPSzAwNDAiLCJpc3MiOiJJUlNYIiwiaWF0IjoxNjk0ODAyMjExLCJleHAiOjE2OTQ4NDU0MTF9.NcmVv51Ozrhvx_gXnBuP29D2sx8y6p0KGFA0eovKy3I",
+		"Auth": fmt.Sprintf("Bearer %s", suplier.Token),
 	}
 	response := helpers.ClientRequest(http.MethodGet, url, "", header)
 
 	var f ResProductDS
-	json.Unmarshal(response, &f)
+	err := json.Unmarshal(response, &f)
+	if err != nil {
+		return nil
+	}
 
 	myMap := f
 	contents := myMap.Data.Content
@@ -62,8 +65,20 @@ func FetchproductDs() []models.ProductSupplier {
 			Name:       val.Namaproduk,
 			Price:      val.Hargajual,
 			SupplierId: 1,
-			Operator:   val.Namaoperator,
+			Operator:   helpers.GetOperator(val.Namaoperator),
+			Category:   helpers.GetCategory(val.Namaproduk, val.Namaoperator),
+			//Operator: val.Namaoperator,
 		}
+		//if strings.Contains(strings.ToLower(val.Namaproduk), "data") ||
+		//	strings.Contains(strings.ToLower(val.Namaoperator), "inject") ||
+		//	strings.Contains(strings.ToLower(val.Namaoperator), "by.u") {
+		//	p.Category = "DATA"
+		//} else if strings.Contains(strings.ToLower(val.Namaproduk), "reguler") || strings.Contains(strings.ToLower(val.Namaoperator), "reguler") {
+		//	p.Category = "PULSA"
+		//} else if strings.Contains(strings.ToLower(val.Namaproduk), "transfer") || strings.Contains(strings.ToLower(val.Namaoperator), "transfer") {
+		//	p.Category = "PULSA TRANSFER"
+		//}
+
 		if val.Isgangguan == 1 {
 			p.Status = "gangguan"
 		} else if val.Isstokkosong == 1 {

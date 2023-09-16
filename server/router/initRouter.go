@@ -50,7 +50,7 @@ func InitRouter() {
 	userApi.POST("/login", controllers.Login)
 	supplierApi := api.Group("/suppliers")
 	supplierApi.Use(middleware.Authentication())
-	supplierApi.GET("/sync-products", controllers.SyncProductSupplier)
+	supplierApi.GET("/sync-products/:id", controllers.SyncProductSupplier)
 	supplierApi.GET("/products", controllers.GetProductSupplier)
 
 	e.Logger.Fatal(e.Start(":8080"))

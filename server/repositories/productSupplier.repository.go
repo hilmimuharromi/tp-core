@@ -19,7 +19,7 @@ import (
 
 func InsertManyProductSuppliers(data []models.ProductSupplier) (interface{}, error) {
 	db := config.DB()
-	err := db.Model(&models.ProductSupplier{}).Create(&data).Preload("Suppliers").Error
+	err := db.Model(&models.ProductSupplier{}).Save(&data).Error
 	if err != nil {
 		return data, err
 	}

@@ -12,14 +12,13 @@ import (
 )
 
 var (
-	//go:embed build/*
-	dist embed.FS
-
+	//go:embed all:build
+	build embed.FS
 	//go:embed build/index.html
 	indexHTML embed.FS
 
-	distDirFS     = echo.MustSubFS(dist, "dist")
-	distIndexHTML = echo.MustSubFS(indexHTML, "dist")
+	distDirFS     = echo.MustSubFS(build, "build")
+	distIndexHTML = echo.MustSubFS(indexHTML, "build")
 )
 
 func RegisterHandlers(e *echo.Echo) {
@@ -28,20 +27,21 @@ func RegisterHandlers(e *echo.Echo) {
 		setupDevProxy(e)
 		return
 	}
+	log.Println("Running in prod mode")
 	// Use the static assets from the dist directory
 	e.FileFS("/", "index.html", distIndexHTML)
 	e.StaticFS("/", distDirFS)
 }
 
 func setupDevProxy(e *echo.Echo) {
-	url, err := url.Parse("http://localhost:3000")
+	urlWeb, err := url.Parse("http://localhost:3000")
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Setep a proxy to the vite dev server on localhost:5173
 	balancer := middleware.NewRoundRobinBalancer([]*middleware.ProxyTarget{
 		{
-			URL: url,
+			URL: urlWeb,
 		},
 	})
 	e.Use(middleware.ProxyWithConfig(middleware.ProxyConfig{

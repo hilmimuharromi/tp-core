@@ -20,8 +20,6 @@ jobs:
           script: |
             whoami
             cd tp-core && git pull
-            cd web && yarn install && yarn build
-            cd ..
             docker stop ${{ vars.CONTAINER_NAME }} || true && docker rm ${{ vars.CONTAINER_NAME }} || true
             docker build --tag tp-core:latest .
             docker run -d -p 8080:8080 --network tp-network --name container-tp-core tp-core:latest

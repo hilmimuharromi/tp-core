@@ -9,11 +9,8 @@ RUN yarn build
 FROM golang:alpine as build-go
 
 ENV GOPATH ""
-RUN go env -w GOPROXY=direct
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
 
-RUN apk add curl
+RUN apk update && apk upgrade
 
 ADD go.mod go.sum ./
 ADD .env ./

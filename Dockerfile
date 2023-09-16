@@ -1,13 +1,30 @@
-FROM golang:alpine
+FROM node:alpine as build-node
+RUN apk --no-cache --virtual build-dependencies add
 
-RUN apk update && apk add --no-cache git
+WORKDIR /workdir
+COPY web/ .
+RUN yarn install
+RUN yarn build
 
-WORKDIR /app
+FROM golang:alpine as build-go
 
-COPY . .
+ENV GOPATH ""
+RUN go env -w GOPROXY=direct
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
 
-RUN go mod tidy
+RUN apk add curl
 
-RUN go build -o binary
+ADD go.mod go.sum ./
+ADD .env ./
+RUN go mod download
+ADD . .
+COPY --from=build-node /workdir/build ./web/build
+RUN go build -o main .
 
-ENTRYPOINT ["/app/binary"]
+# FROM alpine
+# COPY --from=build-go /main .
+
+EXPOSE 8080
+
+CMD ["./main", "run"]

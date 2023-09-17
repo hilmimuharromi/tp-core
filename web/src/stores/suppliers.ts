@@ -1,7 +1,7 @@
 import {StateCreator} from "zustand";
 import axios from "axios";
 import {UserStore} from "./user";
-import pagination from "../components/pagination/Pagination";
+// import pagination from "../components/pagination/Pagination";
 import {GlobalStore} from "./global";
 
 export interface SuppliersStore {
@@ -10,6 +10,8 @@ export interface SuppliersStore {
     setPage: (page: number) => void
     setLimit: (limit: string) => void
     getProductsSuppliers: (spCode: string) => void
+    filterProductSupplier: FilterProductSupplier
+    setFilterProductSupplier: (value: string, key: string)  => void
 }
 
 type PaginationType = {
@@ -19,8 +21,14 @@ type PaginationType = {
     total: number
 }
 
+type FilterProductSupplier = {
+    name: string
+    operator: string
+    category: string
+}
 
-export const createSuppliersStore:StateCreator<SuppliersStore & UserStore & GlobalStore, [], [], SuppliersStore> = ((setState, getState, store) => (
+
+export const createSuppliersStore:StateCreator<SuppliersStore & UserStore & GlobalStore, [], [], SuppliersStore> = ((setState, getState, ) => (
     {
         productSuppliers: [],
         pagination: {
@@ -29,6 +37,11 @@ export const createSuppliersStore:StateCreator<SuppliersStore & UserStore & Glob
             totalPage: 1,
             total:10
         },
+        filterProductSupplier: {
+            name: "",
+            category: "",
+            operator:""
+        },
         setPage: (page) => setState(() => ({pagination: {
             ...getState().pagination, page: page
             }})),
@@ -36,18 +49,23 @@ export const createSuppliersStore:StateCreator<SuppliersStore & UserStore & Glob
             ...getState().pagination, limit : Number(limit)
             }
         })),
-        getProductsSuppliers: async (spCode) => {
+        setFilterProductSupplier: (value, key) => setState(() => ({filterProductSupplier: {
+                ...getState().filterProductSupplier, [key] : value
+            }
+        })),
+        getProductsSuppliers: async () => {
             getState().setLoading(true)
             const token = getState().user.token
             const page = getState().pagination.page
             const limit = getState().pagination.limit
-            const {data} = await axios.get(`/api/v1/suppliers/products?page=${page}&limit=${limit}`,{
+            const {name, operator, category} = getState().filterProductSupplier
+            const {data} = await axios.get(`/api/v1/suppliers/products?page=${page}&limit=${limit}&name=${name}&category=${category}&operator=${operator}`,{
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
             if(data.code == 200) {
-                setState((state) => (
+                setState(() => (
                     {
                         productSuppliers: data.data,
                         pagination: {

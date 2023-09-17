@@ -2,6 +2,7 @@ package integrations
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -42,23 +43,27 @@ type ContentDs struct {
 	Isstokkosong int    `json:"isstokkosong"`
 }
 
-func FetchproductDs(suplier models.Supplier) []models.ProductSupplier {
+func FetchproductDs(suplier models.Supplier) ([]models.ProductSupplier, error) {
+	var dataProducts []models.ProductSupplier
 	url := suplier.PriceUrl
 	header := map[string]string{
 		"Auth": fmt.Sprintf("Bearer %s", suplier.Token),
 	}
 	response := helpers.ClientRequest(http.MethodGet, url, "", header)
-
+	log.Println("response get product ds", string(response))
 	var f ResProductDS
 	err := json.Unmarshal(response, &f)
 	if err != nil {
-		return nil
+		log.Error("error json unmarshal", string(response))
+	}
+
+	if f.Success != true {
+		return []models.ProductSupplier{}, errors.New(fmt.Sprintf("error from suppliers : %s", f.Msg))
 	}
 
 	myMap := f
 	contents := myMap.Data.Content
 
-	var dataProducts []models.ProductSupplier
 	for idx, val := range contents {
 		p := models.ProductSupplier{
 			ID:         fmt.Sprintf("%s-%s-%d", "ds", val.Kodeproduk, idx),
@@ -67,17 +72,7 @@ func FetchproductDs(suplier models.Supplier) []models.ProductSupplier {
 			SupplierId: 1,
 			Operator:   helpers.GetOperator(val.Namaoperator),
 			Category:   helpers.GetCategory(val.Namaproduk, val.Namaoperator),
-			//Operator: val.Namaoperator,
 		}
-		//if strings.Contains(strings.ToLower(val.Namaproduk), "data") ||
-		//	strings.Contains(strings.ToLower(val.Namaoperator), "inject") ||
-		//	strings.Contains(strings.ToLower(val.Namaoperator), "by.u") {
-		//	p.Category = "DATA"
-		//} else if strings.Contains(strings.ToLower(val.Namaproduk), "reguler") || strings.Contains(strings.ToLower(val.Namaoperator), "reguler") {
-		//	p.Category = "PULSA"
-		//} else if strings.Contains(strings.ToLower(val.Namaproduk), "transfer") || strings.Contains(strings.ToLower(val.Namaoperator), "transfer") {
-		//	p.Category = "PULSA TRANSFER"
-		//}
 
 		if val.Isgangguan == 1 {
 			p.Status = "gangguan"
@@ -89,6 +84,5 @@ func FetchproductDs(suplier models.Supplier) []models.ProductSupplier {
 		dataProducts = append(dataProducts, p)
 	}
 
-	log.Println("responseee", myMap)
-	return dataProducts
+	return dataProducts, nil
 }

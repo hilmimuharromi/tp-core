@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
+	"tp-core/server/dto"
 	"tp-core/server/integrations"
 	"tp-core/server/repositories"
 )
@@ -14,7 +15,10 @@ func SyncProductSupplier(c echo.Context) error {
 		return echo.NewHTTPError(400, "invalid id supplier")
 	}
 	supplier, _ := repositories.GetSupplier(spCode)
-	dataProducts := integrations.FetchproductDs(supplier)
+	dataProducts, errFetch := integrations.FetchproductDs(supplier)
+	if errFetch != nil {
+		return echo.NewHTTPError(500, errFetch.Error())
+	}
 	resSave, err := repositories.InsertManyProductSuppliers(dataProducts)
 	if err != nil {
 		log.Println("error", err)
@@ -29,17 +33,14 @@ func SyncProductSupplier(c echo.Context) error {
 func GetProductSupplier(c echo.Context) error {
 	//user := c.Get("user").(*jwt.Token)
 	//claims := user.Claims.(*helpers.JwtCustomClaims)
-	param := c.QueryParams()
-	var limit, page string
-	if param["limit"] != nil {
-		limit = param["limit"][0]
+	var param dto.ParamGetSupplierProduct
+	if err := c.Bind(&param); err != nil {
+		fmt.Println("error login===>", err)
+		return echo.NewHTTPError(400, err.Error())
 	}
-	if param["page"] != nil {
-		page = param["page"][0]
-	}
-	fmt.Println("param ===> 37", limit, page)
+	fmt.Println("param ===> 37", param)
 
-	resData, err := repositories.GetSupplierProduct(limit, page)
+	resData, err := repositories.GetSupplierProduct(param)
 	if err != nil {
 		log.Println("error", err)
 	}

@@ -21,4 +21,13 @@ type SupplierProductDto struct {
 	Price      int    `json:"price"`
 	Status     string `json:"status"`
 	SupplierId int    `json:"supplierId"`
+	Category   string `json:"category"`
+}
+
+type ParamGetSupplierProduct struct {
+	Page     int    `query:"page" default:"0" json:"page,omitempty"`
+	Limit    int    `query:"limit" default:"-1" json:"limit,omitempty"`
+	Category string `query:"category" json:"category,omitempty"`
+	Operator string `query:"operator" json:"operator,omitempty"`
+	Name     string `query:"name" json:"name"`
 }

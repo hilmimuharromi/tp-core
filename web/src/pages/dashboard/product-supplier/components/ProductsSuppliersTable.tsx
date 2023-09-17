@@ -1,4 +1,4 @@
-import { Box, Flex, Progress, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from '@chakra-ui/react';
 import {
     createColumnHelper,
     flexRender,
@@ -9,10 +9,11 @@ import {
 } from '@tanstack/react-table';
 // Custom components
 import Card from 'components/card/Card';
-import Menu from 'components/menu/MainMenu';
+// import Menu from 'components/menu/MainMenu';
 import {formatRupiah} from 'utils/formatRupiah'
 import SimplePagination from 'components/pagination/Pagination'
-import { AndroidLogo, AppleLogo, WindowsLogo } from 'components/icons/Icons';
+import FilterTable from './FilterTableSupplierProduct'
+// import { AndroidLogo, AppleLogo, WindowsLogo } from 'components/icons/Icons';
 import * as React from 'react';
 // Assets
 
@@ -21,6 +22,7 @@ type RowObj = {
     operator: string;
     status: string;
     price: number;
+    category: string
 };
 
 const columnHelper = createColumnHelper<RowObj>();
@@ -30,29 +32,10 @@ export default function ComplexTable(props: { tableData: any }) {
     const { tableData } = props;
     const [ sorting, setSorting ] = React.useState<SortingState>([]);
     const textColor = useColorModeValue('secondaryGray.900', 'white');
-    const iconColor = useColorModeValue('secondaryGray.500', 'white');
+    // const iconColor = useColorModeValue('secondaryGray.500', 'white');
     const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
     let defaultData = tableData;
     const columns = [
-        columnHelper.accessor('operator', {
-            id: 'operator',
-            header: () => (
-                <Text
-                    justifyContent='space-between'
-                    align='center'
-                    fontSize={{ sm: '10px', lg: '12px' }}
-                    color='gray.400'>
-                    Operator
-                </Text>
-            ),
-            cell: (info: any) => (
-                <Flex align='center'>
-                    <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {info.getValue()}
-                    </Text>
-                </Flex>
-            )
-        }),
         columnHelper.accessor('name', {
             id: 'name',
             header: () => (
@@ -72,6 +55,45 @@ export default function ComplexTable(props: { tableData: any }) {
                 </Flex>
             )
         }),
+        columnHelper.accessor('operator', {
+            id: 'operator',
+            header: () => (
+                <Text
+                    justifyContent='space-between'
+                    align='center'
+                    fontSize={{ sm: '10px', lg: '12px' }}
+                    color='gray.400'>
+                    Operator
+                </Text>
+            ),
+            cell: (info: any) => (
+                <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='300'>
+                        {info.getValue()}
+                    </Text>
+                </Flex>
+            )
+        }),
+        columnHelper.accessor('category', {
+            id: 'category',
+            header: () => (
+                <Text
+                    justifyContent='space-between'
+                    align='center'
+                    fontSize={{ sm: '10px', lg: '12px' }}
+                    color='gray.400'>
+                    Category
+                </Text>
+            ),
+            cell: (info: any) => (
+                <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='300'>
+                        {info.getValue()}
+                    </Text>
+                </Flex>
+            )
+        }),
+
         columnHelper.accessor('status', {
             id: 'status',
             header: () => (
@@ -111,7 +133,7 @@ export default function ComplexTable(props: { tableData: any }) {
             )
         })
     ];
-    const [ data, setData ] = React.useState(() => [ ...defaultData ]);
+    const [ data ] = React.useState(() => [ ...defaultData ]);
     const table = useReactTable({
         data,
         columns,
@@ -128,9 +150,10 @@ export default function ComplexTable(props: { tableData: any }) {
         <Card flexDirection='column' w='100%' px='0px' overflowX={{ sm: 'scroll', lg: 'hidden' }}>
             <Flex px='25px' mb="8px" justifyContent='space-between' align='center'>
                 <Text color={textColor} fontSize='22px' fontWeight='700' lineHeight='100%'>
-                    Complex Table
+                    Supplier Product
                 </Text>
-                <Menu />
+                <FilterTable />
+                {/*<Menu />*/}
             </Flex>
             <Box>
                 <Table variant='simple' color='gray.500' mb='24px' mt="12px">

@@ -14,9 +14,15 @@ func SyncProductSupplier(c echo.Context) error {
 	if spCode == "" {
 		return echo.NewHTTPError(400, "invalid id supplier")
 	}
-	supplier, _ := repositories.GetSupplier(spCode)
+	supplier, errSuplier := repositories.GetSupplier(spCode)
+	log.Println("suppliers ===>", supplier)
+	if errSuplier != nil {
+		log.Println("errors suppliers ===>", errSuplier.Error())
+		return echo.NewHTTPError(500, errSuplier.Error())
+	}
 	dataProducts, errFetch := integrations.FetchproductDs(supplier)
 	if errFetch != nil {
+		log.Println("errors fetch products ===>", errFetch.Error())
 		return echo.NewHTTPError(500, errFetch.Error())
 	}
 	resSave, err := repositories.InsertManyProductSuppliers(dataProducts)

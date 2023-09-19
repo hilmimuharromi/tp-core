@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"tp-core/server/controllers"
+	"tp-core/server/dto"
 	"tp-core/server/helpers"
 	"tp-core/server/middleware"
 	"tp-core/web"
@@ -48,8 +49,8 @@ func InitRouter() {
 	api.Any("/callback/:id", func(c echo.Context) error {
 		query := c.QueryParams()
 		param := c.Param("id")
-		var payload interface{}
-		body := c.Bind(payload)
+		var payload dto.CallbackPayloadIAK
+		body := c.Bind(&payload)
 		strBody := fmt.Sprintf("%v", body)
 		log.Println("param ====>", param)
 		log.Println("query ====>", query)

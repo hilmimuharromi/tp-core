@@ -31,3 +31,19 @@ type ParamGetSupplierProduct struct {
 	Operator string `query:"operator" json:"operator,omitempty"`
 	Name     string `query:"name" json:"name"`
 }
+
+type CallbackPayloadIAK struct {
+	Data struct {
+		RefID   string `json:"ref_id"`
+		Status  string `json:"status"`
+		Code    string `json:"code"`
+		Hp      string `json:"hp"`
+		Price   string `json:"price"`
+		Message string `json:"message"`
+		Sn      string `json:"sn"`
+		Balance string `json:"balance"`
+		TrID    string `json:"tr_id"`
+		Rc      string `json:"rc"`
+		Sign    string `json:"sign"`
+	} `json:"data"`
+}

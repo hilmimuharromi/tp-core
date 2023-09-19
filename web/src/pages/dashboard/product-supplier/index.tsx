@@ -1,4 +1,4 @@
-import {Box, Flex} from '@chakra-ui/react';
+import {Box} from '@chakra-ui/react';
 import ProductsTable from 'pages/dashboard/product-supplier/components/ProductsSuppliersTable';
 // import CheckTable from 'views/admin/dataTables/components/CheckTable';
 // import ColumnsTable from 'views/admin/dataTables/components/ColumnsTable';
@@ -18,14 +18,13 @@ export default function ProductSupplier() {
 
     useEffect(() => {
         getProductsSuppliers('ds')
-        console.log('ps ===>', productSuppliers)
     }, [page, limit, name, operator, category])
-
-    if (loading) return <Flex>Loading .....</Flex>
 
     return (
         <Box pt={{ base: '130px', md: '80px', xl: '80px' }}>
-            <ProductsTable   tableData={productSuppliers ? productSuppliers : []} />
+            <ProductsTable
+                isFetching={loading}
+                tableData={productSuppliers && !loading ? productSuppliers : []} />
         </Box>
     );
 }

@@ -58,11 +58,11 @@ var ListKeys = []map[string]string{
 		"name": "pulsa-transfer",
 	}, {
 		"key":  "telpon",
-		"name": "pulsa-tlp",
+		"name": "pulsa",
 	},
 	{
 		"key":  "masa aktif",
-		"name": "pulsa-masa",
+		"name": "pulsa",
 	},
 	{
 		"key":  "pubg",

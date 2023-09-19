@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"tp-core/server/controllers"
 	"tp-core/server/helpers"
@@ -32,15 +33,25 @@ func InitRouter() {
 		return c.String(200, "pong")
 	})
 
-	api.GET("/callback/ds", func(c echo.Context) error {
-		query := c.QueryParams()
-		fmt.Println("query", query)
-		return c.String(200, "success")
-	})
+	//api.GET("/callback/ds", func(c echo.Context) error {
+	//	query := c.QueryParams()
+	//	fmt.Println("query", query)
+	//	return c.String(200, "success")
+	//})
+	//
+	//api.GET("/callback/wpy", func(c echo.Context) error {
+	//	query := c.QueryParams()
+	//	fmt.Println("query", query)
+	//	return c.String(200, "success")
+	//})
 
-	api.GET("/callback/wpy", func(c echo.Context) error {
+	api.Any("/callback", func(c echo.Context) error {
 		query := c.QueryParams()
+		var payload interface{}
+		body := c.Bind(payload)
+		strBody := fmt.Sprintf("%v", body)
 		fmt.Println("query", query)
+		log.Println("bodyyy ====>", strBody)
 		return c.String(200, "success")
 	})
 

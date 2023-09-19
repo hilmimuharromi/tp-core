@@ -1,4 +1,16 @@
-import { Box, Flex, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from '@chakra-ui/react';
+import {
+    Box,
+    Flex,
+    Progress,
+    Table, TableCaption,
+    Tbody,
+    Td,
+    Text,
+    Th,
+    Thead,
+    Tr,
+    useColorModeValue
+} from '@chakra-ui/react';
 import {
     createColumnHelper,
     flexRender,
@@ -28,8 +40,8 @@ type RowObj = {
 const columnHelper = createColumnHelper<RowObj>();
 
 // const columns = columnsDataCheck;
-export default function ComplexTable(props: { tableData: any }) {
-    const { tableData } = props;
+export default function ComplexTable(props: { tableData: any, isFetching: boolean }) {
+    const { tableData, isFetching=false } = props;
     const [ sorting, setSorting ] = React.useState<SortingState>([]);
     const textColor = useColorModeValue('secondaryGray.900', 'white');
     // const iconColor = useColorModeValue('secondaryGray.500', 'white');
@@ -135,17 +147,24 @@ export default function ComplexTable(props: { tableData: any }) {
     ];
     const [ data ] = React.useState(() => [ ...defaultData ]);
     const table = useReactTable({
-        data,
+        data:  tableData && tableData.length > 0 ? tableData : [],
         columns,
         state: {
             sorting
         },
+        autoResetAll: isFetching,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         debugTable: true,
         manualPagination: true
     });
+
+    // if (isFetching) return <Stack>
+    //     <Skeleton height='20px' />
+    //     <Skeleton height='20px' />
+    //     <Skeleton height='20px' />
+    // </Stack>
     return (
         <Card flexDirection='column' w='100%' px='0px' overflowX={{ sm: 'scroll', lg: 'hidden' }}>
             <Flex px='25px' mb="8px" justifyContent='space-between' align='center'>
@@ -185,25 +204,40 @@ export default function ComplexTable(props: { tableData: any }) {
                             </Tr>
                         ))}
                     </Thead>
-                    <Tbody>
-                        {table.getRowModel().rows.slice(0).map((row) => {
-                            return (
-                                <Tr key={row.id}>
-                                    {row.getVisibleCells().map((cell) => {
+                    {
+                        isFetching ? (
+                            <TableCaption>
+                                <Progress size='sm' isIndeterminate />
+                            </TableCaption>
+                        ) : !!tableData.length ? (
+                            <Tbody>
+                                {
+                                    !isFetching && table.getRowModel().rows.slice(0).map(row => {
                                         return (
-                                            <Td
-                                                key={cell.id}
-                                                fontSize={{ sm: '14px' }}
-                                                minW={{ sm: '150px', md: '200px', lg: 'auto' }}
-                                                borderColor='transparent'>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </Td>
-                                        );
-                                    })}
-                                </Tr>
-                            );
-                        })}
-                    </Tbody>
+                                            <Tr key={row.id}>
+                                                {row.getVisibleCells().map((cell) => {
+                                                    return (
+                                                        <Td
+                                                            key={cell.id}
+                                                            fontSize={{ sm: '14px' }}
+                                                            minW={{ sm: '150px', md: '200px', lg: 'auto' }}
+                                                            borderColor='transparent'>
+                                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                        </Td>
+                                                    );
+                                                })}
+                                            </Tr>
+                                        )
+                                    })
+                                }
+                            </Tbody>
+                        ) : (
+                            <TableCaption>
+                                <Text>There are no data to display.</Text>
+                            </TableCaption>
+                        )
+                    }
+
                 </Table>
                 <Flex  mt={10} width={"100%"} justifyContent={'end'}>
                     <SimplePagination />

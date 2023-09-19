@@ -14,9 +14,7 @@ func SyncProductSupplier(c echo.Context) error {
 	if spCode == "" {
 		return echo.NewHTTPError(400, "invalid id supplier")
 	}
-	log.Println("masuuuukkk 17 testing")
 	supplier, errSuplier := repositories.GetSupplier(spCode)
-	log.Println("suppliers ===>", supplier)
 	if errSuplier != nil {
 		log.Println("errors suppliers ===>", errSuplier.Error())
 		return echo.NewHTTPError(500, errSuplier.Error())

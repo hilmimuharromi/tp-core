@@ -21,6 +21,5 @@ jobs:
             whoami
             cd tp-core && git pull
             docker stop ${{ vars.CONTAINER_NAME }} || true && docker rm ${{ vars.CONTAINER_NAME }} || true
-            docker rmi tp-core:latest
-            docker build --tag tp-core:latest .
+            docker build --tag tp-core:latest . --rm
             docker run -d -p 8080:8080 --network tp-network --name container-tp-core tp-core:latest

@@ -45,12 +45,14 @@ func InitRouter() {
 	//	return c.String(200, "success")
 	//})
 
-	api.Any("/callback", func(c echo.Context) error {
+	api.Any("/callback/:id", func(c echo.Context) error {
 		query := c.QueryParams()
+		param := c.Param("id")
 		var payload interface{}
 		body := c.Bind(payload)
 		strBody := fmt.Sprintf("%v", body)
-		fmt.Println("query", query)
+		log.Println("param ====>", param)
+		log.Println("query ====>", query)
 		log.Println("bodyyy ====>", strBody)
 		return c.String(200, "success")
 	})
